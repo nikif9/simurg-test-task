@@ -9,16 +9,19 @@ class ProcessServiceTest extends TestCase
 {
     private $db;
 
+    /**
+     * Инициализация тестовой базы данных.
+     */
     protected function setUp(): void
     {
         $this->db = new PDO('sqlite:business_processes.db');
         $this->db->exec("
-            CREATE TABLE processes (
+            CREATE TABLE IF NOT EXISTS processes (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL UNIQUE
             );
 
-            CREATE TABLE fields (
+            CREATE TABLE IF NOT EXISTS fields (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 process_id INTEGER NOT NULL,
                 name TEXT NOT NULL,
@@ -29,7 +32,9 @@ class ProcessServiceTest extends TestCase
             );
         ");
     }
-
+    /**
+     * Тест для проверки создания процесса.
+     */
     public function testCreateProcess()
     {
         $service = new ProcessService($this->db);
@@ -51,7 +56,9 @@ class ProcessServiceTest extends TestCase
         $this->assertEquals(sprintf('%+.2f', 455), $fieldsFromProcess['Number']->getFormattedValue());
         $this->assertEquals('12.03.2023', $fieldsFromProcess['Date']->getFormattedValue());
     }
-
+     /**
+     * Тест для проверки получения процессов с постраничной навигацией.
+     */
     public function testGetProcesses()
     {
         $service = new ProcessService($this->db);

@@ -11,17 +11,28 @@ class Process
     private array $fields = [];
     private PDO $db;
 
+    /**
+     *
+     * @param string $name Имя процесса
+     * @param PDO $db Объект базы данных
+     */
     public function __construct(string $name, PDO $db)
     {
         $this->name = $name;
         $this->db = $db;
     }
-
+    /**
+     * Добавляет поле в процесс.
+     *
+     * @param Field $field Поле для добавления
+     */
     public function addField(Field $field)
     {
         $this->fields[$field->name] = $field;
     }
-
+    /**
+     * Сохраняет процесс и его поля в базу данных.
+     */
     public function save()
     {
         $stmt = $this->db->prepare("INSERT INTO processes (name) VALUES (:name)");
@@ -39,7 +50,11 @@ class Process
             ]);
         }
     }
-
+    /**
+     * Возвращает все поля процесса.
+     *
+     * @return Field[] Массив полей
+     */
     public function getFields(): array
     {
         return $this->fields;
